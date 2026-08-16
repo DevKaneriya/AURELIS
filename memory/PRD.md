@@ -26,6 +26,18 @@ Frontend-only. No backend/auth/db.
   to the WebGL layer without per-frame React renders. `store.js` = zustand + NAV model.
 - **Sound:** `lib/audio.js` Web Audio engine (ambient drone + UI blips), scroll-velocity → brightness.
 
+## Implemented (2026-06 build 4)
+- Replaced the stylized procedural car with a REALISTIC supercar GLB (DRACO-compressed, served locally
+  at /models/ferrari.glb) loaded via drei useGLTF, wrapped in an error boundary that silently falls back
+  to the procedural model if the GLB ever fails. Real model confirmed rendering (fallback not triggered).
+- Configurator now mutates the REAL model: Body -> paint color, Wheels -> rim finish (dark/silver/bronze),
+  Interior -> accent + emissive lights; turntable + live summary intact.
+- Added photoreal image showcase "Gallery" chapter (side profile + stance + signature detail) with
+  spotlight vignette, clip reveals and scroll parallax, using generated VELA renders.
+- Verified by testing agent iteration 4: 100% pass, 0 JS errors, GLB+DRACO load reliable (~2s to hide loader).
+- Honest limitation: a photoreal EXACT replica of the blueprint cannot be authored procedurally in-engine;
+  a bespoke .glb of the exact VELA design would be required to match the blueprint 1:1.
+
 ## Implemented (2026-06 build 3)
 - Replaced the vehicle with a sleeker hyper-GT matching the user's blueprint: teardrop glass canopy,
   pointed nose, signature LED front blades, full-width rear light bar, aero diffuser + rear lip, and

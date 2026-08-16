@@ -42,6 +42,12 @@ export const VELA_REAR =
 export const BLUEPRINT =
   "https://customer-assets-jai6qajn.emergentagent.net/job_vela-reveal/artifacts/elwc6m0n_image.png";
 
+export const VELA_SIDE =
+  "https://static.prod-images.emergentagent.com/jobs/c936820e-8150-4d0c-a1aa-bd78abf920ef/images/2e8484f2fe938cd61f57f1d4da301c9dded6fb38a06b73e2d348009b71cd2ce1.jpeg";
+
+export const VELA_DETAIL =
+  "https://static.prod-images.emergentagent.com/jobs/c936820e-8150-4d0c-a1aa-bd78abf920ef/images/3a6ee74e32c74ccdea9bee0c6f01bc9a13971378c6f188d80c436f1ec4f2544c.jpeg";
+
 // Spec sheet from the AURELIS VELA blueprint.
 export const SPECS = [
   ["Length", "5,210 mm"],

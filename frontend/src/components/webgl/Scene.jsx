@@ -1,7 +1,7 @@
 import { Suspense, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { useProgress } from "@react-three/drei";
-import Vehicle from "./Vehicle";
+import Car from "./VehicleModel";
 import Atmosphere from "./Atmosphere";
 import CameraRig from "./CameraRig";
 import Effects from "./Effects";
@@ -41,7 +41,7 @@ export default function Scene() {
       <color attach="background" args={["#030304"]} />
       <Suspense fallback={null}>
         <Atmosphere mobile={mobile} reduced={reduced} />
-        <Vehicle finish={finish} accent={accent} wheel={wheel} />
+        <Car finish={finish} accent={accent} wheel={wheel} />
         <CameraRig reduced={reduced} />
         {!reduced && <Effects mobile={mobile} />}
         <ReadySignal />

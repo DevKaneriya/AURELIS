@@ -2,6 +2,7 @@ import Material from "@/components/chapters/Material";
 import Performance from "@/components/chapters/Performance";
 import Machine from "@/components/chapters/Machine";
 import Configurator from "@/components/chapters/Configurator";
+import Gallery from "@/components/chapters/Gallery";
 import Design from "@/components/chapters/Design";
 import Finale from "@/components/chapters/Finale";
 
@@ -14,6 +15,7 @@ export default function Chapters() {
       <Performance />
       <Machine />
       <Configurator />
+      <Gallery />
       <Design />
       <Finale />
     </div>
