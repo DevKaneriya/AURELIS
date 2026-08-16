@@ -1,0 +1,105 @@
+{
+  "project_name": "AURELIS VELA - Digital Launch Experience",
+  "theme_preference": "dark_mode_only",
+  "emotional_archetype": "ARCHETYPE 5 (Luxury) mixed with ARCHETYPE 7 (Electric/Future) - 'Cinematic, Mysterious, Raw Power'",
+  "typography": {
+    "google_fonts_import": "@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;300;400;700&family=Syne:wght@400;600;700;800&family=Unbounded:wght@200;400;700;900&display=swap');",
+    "primary_heading": {
+      "family": "font-['Unbounded',_sans-serif]",
+      "usage": "Massive cinematic typography, hero titles ('BEYOND MOTION'), large immersive menu numbers. Imparts an architectural, wide, and aggressive futuristic luxury feel.",
+      "styles": "uppercase, tracking-tighter, leading-none"
+    },
+    "secondary_heading": {
+      "family": "font-['Syne',_sans-serif]",
+      "usage": "Editorial narrative moments, section titles. Brings a distinctive, high-fashion luxury edge that cuts through the technical vibe.",
+      "styles": "tracking-tight"
+    },
+    "technical_data": {
+      "family": "font-['JetBrains_Mono',_monospace]",
+      "usage": "Chapter markers ('00 ARRIVAL'), loading percentages, coordinates, telemetry data, sound toggles. Essential for the 'Machine' aesthetic.",
+      "styles": "uppercase, tracking-[0.2em], text-xs to text-sm"
+    }
+  },
+  "colors": {
+    "css_variables": {
+      "--bg-void": "#030303",
+      "--bg-surface": "#0A0A0C",
+      "--text-primary": "#F2F3F5",
+      "--text-muted": "#6E7178",
+      "--accent-liquid-amber": "#FF4400",
+      "--accent-neon-cyan": "#00F3FF",
+      "--border-subtle": "rgba(255, 255, 255, 0.05)"
+    },
+    "guidelines": {
+      "background": "The experience must feel like a deep, dark void. Use pure black or extremely dark charcoal. No generic gray backgrounds.",
+      "text": "High contrast white/off-white for main text. Muted elements should use the deep gray.",
+      "accent": "Use Liquid Amber (#FF4400) SPARINGLY as the kinetic trigger - for interactive hover states, laser-thin progress bars, or active chapter markers. It represents raw electric power."
+    }
+  },
+  "visual_enhancers": {
+    "texture": "Implement a fixed, fullscreen, pointer-events-none noise overlay using a CSS background image or a tiny repeating SVG with mixed-blend-mode: overlay and opacity-30. This breaks the 'digital flatness' and adds cinematic film grain.",
+    "cursor_system": "Custom cursor is MANDATORY. Hide the default cursor (`cursor-none` on body). Use Framer Motion or GSAP to map a custom div to mouse coordinates. Default state: small white dot. Hover state on links/menu: expands into a large hollow circle with `backdrop-blur-sm` and a thin border, mixing with the background.",
+    "volumetric_lighting": "Use soft, absolute positioned blurred divs (`blur-[100px]`) behind the 3D canvas or in the HTML layer to simulate light bleed from the vehicle's headlights or environment.",
+    "glassmorphism": "For the Immersive Menu: use high-end optical clarity. `bg-black/60 backdrop-blur-2xl border-l border-white/10`."
+  },
+  "motion": {
+    "scroll_engine": "Lenis is MANDATORY for momentum scrolling.",
+    "animation_library": "GSAP + ScrollTrigger for scroll-linked camera choreography and DOM animations. Framer Motion for UI micro-interactions (hover, cursor, toggles).",
+    "easings": "Use aggressive cinematic S-curves. `power4.inOut` or custom cubic-bezier(0.85, 0, 0.15, 1). Slow starts, fast middles, smooth long decelerations.",
+    "page_transitions": "Do not just 'swap' components. The Loading screen must dissolve into the 3D scene (Arrival). The Immersive Menu must scale down the background canvas and slide in the navigation with staggered text reveals."
+  },
+  "layouts": {
+    "structure": "This is NOT a traditional stacked website. It is an absolute-positioned layered architecture.",
+    "layer_0_webgl": "Fixed fullscreen `<Canvas>` (React Three Fiber). This holds the 'VELA' vehicle and particle environment.",
+    "layer_1_dom": "A scrolling container with transparent sections (`100vh` each) that act as ScrollTrigger markers to drive the 3D camera and GSAP timeline.",
+    "layer_2_ui": "Fixed UI overlay containing the Sound Toggle, Custom Cursor, persistent Chapter indicator, and Menu Button.",
+    "typography_scale": "Hero text should scale dramatically. Use `clamp(3rem, 12vw, 12rem)` for massive background numbers or the 'BEYOND MOTION' title."
+  },
+  "3d_libraries": {
+    "required_packages": [
+      "@react-three/fiber",
+      "@react-three/drei",
+      "three",
+      "gsap",
+      "@studio-freight/lenis",
+      "framer-motion"
+    ],
+    "scene_setup": "Use `@react-three/drei` components like `<Environment preset='night'>`, `<ContactShadows>`, and `<Sparkles>` for atmospheric dust. Animate the `<PerspectiveCamera>` position and rotation via GSAP mapped to scroll progress."
+  },
+  "media": {
+    "image_urls": {
+      "placeholder_vehicle_texture": {
+        "url": "https://images.unsplash.com/photo-1645400379459-f6fd3d963fd4?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NzV8MHwxfHNlYXJjaHwxfHxmdXR1cmlzdGljJTIwY2FyJTIwZGFyayUyMGxpZ2h0aW5nfGVufDB8fHx8MTc4Njg4NDA0M3ww&ixlib=rb-4.1.0&q=85",
+        "description": "Dark aesthetic vehicle reference. Use for 2D fallback or conceptual texture mapping."
+      },
+      "cinematic_flare": {
+        "url": "https://images.unsplash.com/photo-1614471131724-d57b15e45173?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxNzV8MHwxfHNlYXJjaHwxfHxjaW5lbWF0aWMlMjBhYnN0cmFjdCUyMGxpZ2h0JTIwcmF5fGVufDB8fHx8MTc4Njg4NDA0M3ww&ixlib=rb-4.1.0&q=85",
+        "description": "Abstract cinematic light ray. Use as a background plate with mixed-blend-mode: screen for light leak effects."
+      },
+      "metal_surface": {
+        "url": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzB8MHwxfHNlYXJjaHwxfHxkYXJrJTIwbWV0YWwlMjB0ZXh0dXJlfGVufDB8fHx8MTc4Njg4NDA0M3ww&ixlib=rb-4.1.0&q=85",
+        "description": "Dark metal texture for material/configurator chapter UI backgrounds."
+      }
+    }
+  },
+  "specific_chapters": {
+    "00_loading": "A near-black screen. A monospace progress counter (0-100%) dead center. Once loaded, the wordmark 'AURELIS' emerges spatially from the depth (scale expands, blur reduces to 0).",
+    "01_hero_arrival": "The 'AURELIS' text fades. The 3D canvas is revealed. A volumetric atmosphere (fog + particles). The 'VELA' vehicle is barely visible in shadow. As the user scrolls slightly, a cinematic light sweep occurs, and 'BEYOND MOTION' hits the screen in massive `Unbounded` typography. The camera starts its slow orbit.",
+    "02_immersive_menu": "Triggered via fixed button. The DOM scales down the main WebGL canvas slightly (`transform: scale(0.95)`), wrapping it in a rounded border. The screen darkens. Enormous spatial typography (01 EXPERIENCE, 02 MOTION...) cascades in from the right. Hovering a menu item shifts the WebGL camera dynamically or changes the background abstract light flare image to preview that section."
+  },
+  "GENERAL_UI_UX_DESIGN_GUIDELINES": [
+    "All interactive and key informational elements MUST include a `data-testid` attribute to facilitate robust automated testing.",
+    "DO NOT use complete `transparent` background in header, overlays, or any surface that has content under it without a blur/scrim.",
+    "Avoid the 'AI slop' aesthetic: no generic centered text, no simplistic linear gradients, no Bootstrap-like standard layouts.",
+    "Treat the interface as a digital film HUD. Elements should appear to have purpose and precision.",
+    "Avoid standard scrolling text blocks. If text must be presented, stagger its appearance by line or word using GSAP/Framer Motion."
+  ],
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "Execute all provided CSS variables globally in index.css.",
+    "Ensure `data-testid` attributes are applied rigorously to the Sound Toggle, Menu Button, Menu Items, and Scroll Triggers.",
+    "This is a FRONTEND-ONLY React App (.js files). Construct a centralized R3F Canvas and overlay the HTML using `ScrollControls` from `@react-three/drei` or via fixed absolute GSAP-synced layers.",
+    "Use Framer Motion for the Custom Cursor component to avoid performance hits on the main React render cycle. Track mouse globally.",
+    "Never fallback to 'Lorem Ipsum' or placeholder empty boxes. Build the structural DOM with the cinematic feel intended.",
+    "For the 'VELA' vehicle if a 3D model isn't available to load, construct a highly stylized abstract geometric representation (e.g., a sleek elongated low-poly metallic shape) using standard Three.js primitives that looks like a futuristic concept."
+  ]
+}

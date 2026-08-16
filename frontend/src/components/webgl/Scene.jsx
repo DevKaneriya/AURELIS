@@ -1,0 +1,49 @@
+import { Suspense, useEffect } from "react";
+import { Canvas } from "@react-three/fiber";
+import { useProgress } from "@react-three/drei";
+import Vehicle from "./Vehicle";
+import Atmosphere from "./Atmosphere";
+import CameraRig from "./CameraRig";
+import Effects from "./Effects";
+import { useStore } from "@/store";
+import { isMobile as isMobileFn, prefersReducedMotion } from "@/lib/device";
+
+function ReadySignal() {
+  const { active } = useProgress();
+  const setLoaded = useStore((s) => s.setLoaded);
+  useEffect(() => {
+    if (!active) {
+      const id = setTimeout(() => setLoaded(true), 400);
+      return () => clearTimeout(id);
+    }
+  }, [active, setLoaded]);
+  return null;
+}
+
+export default function Scene() {
+  const mobile = isMobileFn();
+  const reduced = prefersReducedMotion();
+  const finish = useStore((s) => s.finish) || "obsidian";
+
+  return (
+    <Canvas
+      dpr={[1, mobile ? 1.5 : 2]}
+      shadows={!mobile}
+      gl={{
+        antialias: true,
+        powerPreference: "high-performance",
+        alpha: false,
+      }}
+      camera={{ position: [0, 1.4, 10.5], fov: 40, near: 0.1, far: 100 }}
+    >
+      <color attach="background" args={["#030304"]} />
+      <Suspense fallback={null}>
+        <Atmosphere mobile={mobile} reduced={reduced} />
+        <Vehicle finish={finish} />
+        <CameraRig reduced={reduced} />
+        {!reduced && <Effects mobile={mobile} />}
+        <ReadySignal />
+      </Suspense>
+    </Canvas>
+  );
+}

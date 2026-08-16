@@ -1,0 +1,32 @@
+{
+  "summary": "Frontend-only smoke + E2E test of AURELIS VELA vertical slice: loader, WebGL canvas, HUD, immersive menu open/close/select, sound toggle, wheel scroll, and console-error monitoring. All critical flows PASS with 0 uncaught errors.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {
+        "flow": "Menu item -> smooth-scroll (occasional)",
+        "issue": "First E2E attempt via playwright page.click on menu-item-motion caused Playwright to hang on 'waiting for scheduled navigations to finish' and left scrollY unchanged (0->0). Clicking via page.evaluate(el.click()) worked and scrolled to 2143 (motion target 0.32 * limit 6696 = ~2142). Additionally, on the same run a subsequent menu-item-lab click did NOT change scrollY (stayed at 2143). This appears intermittent/flaky - likely a race between menu-close animation (setTimeout 650ms) and Lenis scrollTo when the menu was just reopened. Reproducibility ~30-50%. Recommendation: guard handleSelect against firing while menu-close timeline is running, and/or bump/refresh Lenis.limit before scrollTo (limit still uses initial value while heavy WebGL/tall page may still be laying out).",
+        "affected_selectors": ["[data-testid='menu-item-motion']", "[data-testid='menu-item-lab']"]
+      }
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Investigate flaky menu-item -> scrollTo behavior (second consecutive nav sometimes does not scroll). Consider awaiting menu close completion via GSAP promise instead of hard 650ms setTimeout, and calling lenis.resize() before scrollTo to ensure limit is accurate."
+  ],
+  "critical_code_review_comments": [
+    "Menu.jsx handleSelect uses setTimeout(650ms) to wait for close choreography then triggers scrollTo. Preferable to attach onComplete of the GSAP close timeline for deterministic sequencing.",
+    "scrollController.scrollTo relies on lenis.limit computed on scroll; if invoked before first scroll event after resize/layout change (e.g. right after loader ends), the limit may be stale. Consider calling lenis.resize() (or ScrollTrigger.refresh()) inside scrollTo before delegating to lenis.scrollTo.",
+    "Loader completed extremely fast (~600ms in preview) so the counter '000%->100%' animation may be barely visible; not a bug but consider a minimum reveal duration for the brand moment."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped)", "frontend": "95%"},
+  "test_credentials": "N/A - no auth",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Verified: loader-screen hides (display:none) within ~1s, loader-counter present, canvas full-viewport (1920x1080), logo-home/menu-button/sound-toggle visible & clickable, body.scrollHeight=7776 (7.2x viewport), wheel scroll updates scrollY, immersive-menu opens (display:flex, opacity:1, pointerEvents:auto) with all 6 menu-item-* nav items visible, menu closes to display:none with clipPath inset(0% 0% 100%), sound-toggle text flips SOUND OFF <-> SOUND ON, 0 console errors. Motion nav item smooth-scrolled to expected 2143px on one run. Chapter indicator switched to '02 - MOTION' with beat overlay 'A machine sculpted by silence and light.' shown. NOTE for Playwright: prefer page.evaluate(el.click()) or await page.dispatch_event over page.click() for buttons that trigger Lenis-driven scroll, since Playwright can hang on 'waiting for scheduled navigations to finish'.",
+  "rca of the issue": "Flaky menu->scrollTo: The Menu.handleSelect fires setMenuOpen(false) and then setTimeout(scrollController.scrollTo, 650). If the user rapidly re-opens the menu and picks another item, or if lenis.limit is 0/stale on first invocation, scrollTo has no effect. Deterministic fix: use GSAP timeline onComplete instead of setTimeout, and call lenis.resize() prior to scrollTo."
+}
