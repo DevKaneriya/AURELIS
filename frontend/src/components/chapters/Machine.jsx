@@ -28,10 +28,12 @@ export default function Machine() {
       start: "top 55%",
       end: "bottom 45%",
       onToggle: (self) => {
-        setSceneMode(self.isActive ? "machine" : "scroll");
         if (self.isActive) {
+          setSceneMode("machine");
           const cur = SYSTEMS.find((s) => s.id === machineSystem) || SYSTEMS[0];
           setAccent(cur.accent);
+        } else if (useStore.getState().sceneMode === "machine") {
+          setSceneMode("scroll");
         }
       },
     });

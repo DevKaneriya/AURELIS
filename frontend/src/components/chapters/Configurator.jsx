@@ -17,9 +17,9 @@ const WHEELS = [
   { id: "sculpted", name: "Sculpted" },
 ];
 const INTERIOR = [
-  { id: "carbon", name: "Carbon", accent: "#ff4400" },
-  { id: "atelier", name: "Atelier", accent: "#c9a24b" },
-  { id: "midnight", name: "Midnight", accent: "#00f3ff" },
+  { id: "carbon", name: "Carbon", accent: "#ff4400", seat: "#0e0f13" },
+  { id: "atelier", name: "Atelier", accent: "#c9a24b", seat: "#6b4a2a" },
+  { id: "midnight", name: "Midnight", accent: "#00f3ff", seat: "#12233b" },
 ];
 
 const nameOf = (arr, id) => (arr.find((x) => x.id === id) || {}).name || id;
@@ -42,6 +42,8 @@ export default function Configurator() {
   const wheel = useStore((s) => s.wheel);
   const setWheel = useStore((s) => s.setWheel);
   const setSceneMode = useStore((s) => s.setSceneMode);
+  const setConfigSpin = useStore((s) => s.setConfigSpin);
+  const setInterior = useStore((s) => s.setInterior);
   const soundOn = useStore((s) => s.soundOn);
 
   const interior = INTERIOR.find((i) => i.accent === accent)?.id || "carbon";
@@ -51,7 +53,11 @@ export default function Configurator() {
       trigger: section.current,
       start: "top 55%",
       end: "bottom 45%",
-      onToggle: (self) => setSceneMode(self.isActive ? "configurator" : "scroll"),
+      onToggle: (self) => {
+        if (self.isActive) setSceneMode("configurator");
+        else if (useStore.getState().sceneMode === "configurator") setSceneMode("scroll");
+      },
+      onUpdate: (self) => setConfigSpin(self.progress),
     });
     return () => st.kill();
   }, [setSceneMode]);
@@ -133,7 +139,10 @@ export default function Configurator() {
                 {INTERIOR.map((it) => (
                   <button
                     key={it.id}
-                    onClick={() => tap(setAccent, it.accent)}
+                    onClick={() => {
+                      tap(setAccent, it.accent);
+                      setInterior(it.seat);
+                    }}
                     data-cursor="hover"
                     data-testid={`config-interior-${it.id}`}
                     aria-pressed={interior === it.id}

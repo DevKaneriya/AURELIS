@@ -58,7 +58,7 @@ export default function Hud() {
   };
 
   return (
-    <div ref={rootRef} className="pointer-events-none fixed inset-0 z-[9980] opacity-0">
+    <div ref={rootRef} className="pointer-events-none fixed inset-0 z-[9987] opacity-0">
       {/* Top bar */}
       <header className="pointer-events-none absolute left-0 right-0 top-0 flex items-center justify-between px-6 py-5 sm:px-10 sm:py-7">
         <button

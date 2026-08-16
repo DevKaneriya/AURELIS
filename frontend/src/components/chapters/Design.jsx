@@ -30,16 +30,18 @@ export default function Design() {
           }
         );
       });
-      gsap.utils.toArray(".reveal-clip").forEach((el) => {
+      gsap.utils.toArray(".reveal-clip").forEach((el, i) => {
         gsap.fromTo(
           el,
-          { clipPath: "inset(0% 0% 100% 0%)", scale: 1.1 },
+          { clipPath: "inset(0% 0% 0% 100%)", scale: 1.35, filter: "brightness(2) contrast(1.4)", rotate: i % 2 ? 3 : -3 },
           {
             clipPath: "inset(0% 0% 0% 0%)",
             scale: 1,
-            duration: 1.2,
-            ease: "power3.out",
-            scrollTrigger: { trigger: el, start: "top 82%" },
+            filter: "brightness(1) contrast(1)",
+            rotate: 0,
+            duration: 1.4,
+            ease: "expo.out",
+            scrollTrigger: { trigger: el, start: "top 85%" },
           }
         );
       });

@@ -13,6 +13,8 @@ export const useStore = create((set) => ({
   wheel: "performance",
   sceneMode: "scroll", // scroll | configurator | performance | machine
   machineSystem: "energy",
+  configSpin: 0,
+  interiorColor: "#101216",
 
   setLoaded: (v) => set({ loaded: v }),
   setEntered: (v) => set({ entered: v }),
@@ -25,6 +27,8 @@ export const useStore = create((set) => ({
   setWheel: (v) => set({ wheel: v }),
   setSceneMode: (v) => set({ sceneMode: v }),
   setMachineSystem: (v) => set({ machineSystem: v }),
+  setConfigSpin: (v) => set({ configSpin: v }),
+  setInterior: (v) => set({ interiorColor: v }),
 }));
 
 // Navigation model shared by Menu + CameraRig previews.

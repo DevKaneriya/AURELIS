@@ -36,7 +36,10 @@ export default function Performance() {
       end: "bottom bottom",
       pin: pinRef.current,
       anticipatePin: 1,
-      onToggle: (self) => setSceneMode(self.isActive ? "performance" : "scroll"),
+      onToggle: (self) => {
+        if (self.isActive) setSceneMode("performance");
+        else if (useStore.getState().sceneMode === "performance") setSceneMode("scroll");
+      },
       onUpdate: (self) => {
         const idx = Math.min(BANDS - 1, Math.floor(self.progress * BANDS));
         setActive((p) => (p === idx ? p : idx));

@@ -20,16 +20,20 @@ function VehicleModel({ finish = "obsidian", accent = "#ff4400", wheel = "perfor
   const { scene } = useGLTF(MODEL_URL, true);
   const car = useMemo(() => scene.clone(true), [scene]);
   const sceneMode = useStore((s) => s.sceneMode);
+  const configSpin = useStore((s) => s.configSpin);
+  const interiorColor = useStore((s) => s.interiorColor);
 
   const bodyMats = useRef([]);
   const rimMats = useRef([]);
   const accentMats = useRef([]);
+  const interiorMats = useRef([]);
 
   // Re-skin the model once with configurable materials.
   useLayoutEffect(() => {
     bodyMats.current = [];
     rimMats.current = [];
     accentMats.current = [];
+    interiorMats.current = [];
     car.traverse((o) => {
       if (!o.isMesh) return;
       o.castShadow = true;
@@ -55,6 +59,10 @@ function VehicleModel({ finish = "obsidian", accent = "#ff4400", wheel = "perfor
         m.toneMapped = false;
         o.material = m;
         accentMats.current.push(m);
+      } else if (/leather|interior|seat/i.test(nn) || nn === "trim" || nn === "steering_trim" || /leather|interior/i.test(mn)) {
+        const m = new THREE.MeshStandardMaterial({ metalness: 0.25, roughness: 0.6 });
+        o.material = m;
+        interiorMats.current.push(m);
       } else if (nn === "glass") {
         o.material = new THREE.MeshPhysicalMaterial({
           color: "#05070a",
@@ -103,13 +111,23 @@ function VehicleModel({ finish = "obsidian", accent = "#ff4400", wheel = "perfor
     });
   }, [accent]);
 
+  useLayoutEffect(() => {
+    interiorMats.current.forEach((m) => {
+      m.color.set(interiorColor);
+      m.needsUpdate = true;
+    });
+  }, [interiorColor]);
+
   useFrame((state, delta) => {
     if (!outer.current) return;
     const t = state.clock.elapsedTime;
     // Configurator = turntable. Everywhere else the car stays put (front toward
     // the opening camera) and only sways gently — the CAMERA does the moving,
     // so far->close dolly + orbit reads as one coherent motion.
-    if (sceneMode === "configurator") outer.current.rotation.y += delta * 0.28;
+    // Configurator = scroll-driven 360 turntable (uses the section's scroll to
+    // show every angle of the chosen configuration). Elsewhere: stable + sway.
+    if (sceneMode === "configurator")
+      outer.current.rotation.y = Math.PI + configSpin * Math.PI * 2 + Math.sin(t * 0.2) * 0.03;
     else outer.current.rotation.y = Math.PI + Math.sin(t * 0.2) * 0.05;
     outer.current.position.y = Math.sin(t * 0.6) * 0.01;
   });

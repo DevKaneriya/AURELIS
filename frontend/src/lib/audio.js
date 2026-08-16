@@ -1,11 +1,12 @@
-// Procedural sound engine using the Web Audio API. No external assets.
+// Procedural PREMIUM automotive sound (Web Audio API, no external assets):
+// a deep EV sub + a turbine-like whine bed, with airy "exhaust" whooshes for UI.
 class AudioEngine {
   constructor() {
     this.ctx = null;
     this.master = null;
-    this.ambientGain = null;
     this.enabled = false;
     this.nodes = [];
+    this.noiseBuf = null;
   }
 
   _ensure() {
@@ -23,8 +24,8 @@ class AudioEngine {
     if (!this.ctx) return;
     if (this.ctx.state === "suspended") await this.ctx.resume();
     this.enabled = true;
-    this._startAmbient();
-    this._ramp(this.master.gain, 0.9, 1.2);
+    this._startBed();
+    this._ramp(this.master.gain, 0.85, 1.4);
   }
 
   disable() {
@@ -40,89 +41,125 @@ class AudioEngine {
     param.exponentialRampToValueAtTime(Math.max(value, 0.0001), t + time);
   }
 
-  _startAmbient() {
-    if (this.ambientGain) return;
+  _noise() {
+    if (this.noiseBuf) return this.noiseBuf;
+    const len = this.ctx.sampleRate * 2;
+    const buf = this.ctx.createBuffer(1, len, this.ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    this.noiseBuf = buf;
+    return buf;
+  }
+
+  _startBed() {
+    if (this.bed) return;
     const ctx = this.ctx;
-    const ambient = ctx.createGain();
-    ambient.gain.value = 0.18;
-    ambient.connect(this.master);
-    this.ambientGain = ambient;
+    const bed = ctx.createGain();
+    bed.gain.value = 0.22;
+    bed.connect(this.master);
+    this.bed = bed;
 
-    const filter = ctx.createBiquadFilter();
-    filter.type = "lowpass";
-    filter.frequency.value = 420;
-    filter.Q.value = 4;
-    filter.connect(ambient);
+    // deep body sub
+    const sub = ctx.createOscillator();
+    sub.type = "sine";
+    sub.frequency.value = 41;
+    const subG = ctx.createGain();
+    subG.gain.value = 0.6;
+    sub.connect(subG);
+    subG.connect(bed);
+    sub.start();
+    this.nodes.push(sub);
 
-    // Two detuned low drones for a warm cinematic bed.
-    [55, 55.4, 82.5].forEach((freq, i) => {
-      const osc = ctx.createOscillator();
-      osc.type = i === 2 ? "triangle" : "sawtooth";
-      osc.frequency.value = freq;
+    // turbine / EV whine — two detuned triangles through a resonant bandpass
+    const whineFilter = ctx.createBiquadFilter();
+    whineFilter.type = "bandpass";
+    whineFilter.frequency.value = 420;
+    whineFilter.Q.value = 6;
+    whineFilter.connect(bed);
+    this.whineFilter = whineFilter;
+
+    [173, 174.5, 262].forEach((f, i) => {
+      const o = ctx.createOscillator();
+      o.type = i === 2 ? "sine" : "triangle";
+      o.frequency.value = f;
       const g = ctx.createGain();
-      g.gain.value = i === 2 ? 0.25 : 0.5;
-      osc.connect(g);
-      g.connect(filter);
-      osc.start();
-      this.nodes.push(osc);
+      g.gain.value = i === 2 ? 0.12 : 0.3;
+      o.connect(g);
+      g.connect(whineFilter);
+      o.start();
+      this.nodes.push(o);
     });
 
-    // Slow filter LFO for movement.
+    // slow movement on the whine
     const lfo = ctx.createOscillator();
-    lfo.frequency.value = 0.06;
-    const lfoGain = ctx.createGain();
-    lfoGain.gain.value = 180;
-    lfo.connect(lfoGain);
-    lfoGain.connect(filter.frequency);
+    lfo.frequency.value = 0.08;
+    const lfoG = ctx.createGain();
+    lfoG.gain.value = 120;
+    lfo.connect(lfoG);
+    lfoG.connect(whineFilter.frequency);
     lfo.start();
     this.nodes.push(lfo);
-
-    this.ambientFilter = filter;
   }
 
-  // scroll velocity -> subtle brightness of the ambient bed
+  // scroll velocity -> the whine opens up like gentle acceleration
   setIntensity(v) {
-    if (!this.enabled || !this.ambientFilter) return;
-    const target = 400 + Math.min(Math.abs(v) * 40, 1400);
-    this.ambientFilter.frequency.setTargetAtTime(
-      target,
-      this.ctx.currentTime,
-      0.3
-    );
+    if (!this.enabled || !this.whineFilter) return;
+    const target = 380 + Math.min(Math.abs(v) * 55, 1600);
+    this.whineFilter.frequency.setTargetAtTime(target, this.ctx.currentTime, 0.25);
   }
 
-  _blip({ freq = 440, type = "sine", dur = 0.12, gain = 0.2, sweep = 0 }) {
+  // airy exhaust/intake sweep
+  _whoosh({ from = 300, to = 1800, dur = 0.6, gain = 0.12 }) {
     if (!this.enabled || !this.ctx) return;
     const ctx = this.ctx;
-    const osc = ctx.createOscillator();
+    const src = ctx.createBufferSource();
+    src.buffer = this._noise();
+    const bp = ctx.createBiquadFilter();
+    bp.type = "bandpass";
+    bp.Q.value = 1.2;
+    bp.frequency.setValueAtTime(from, ctx.currentTime);
+    bp.frequency.exponentialRampToValueAtTime(Math.max(to, 40), ctx.currentTime + dur);
     const g = ctx.createGain();
-    osc.type = type;
-    osc.frequency.setValueAtTime(freq, ctx.currentTime);
-    if (sweep)
-      osc.frequency.exponentialRampToValueAtTime(
-        Math.max(freq + sweep, 20),
-        ctx.currentTime + dur
-      );
+    g.gain.setValueAtTime(0.0001, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(gain, ctx.currentTime + dur * 0.3);
+    g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + dur);
+    src.connect(bp);
+    bp.connect(g);
+    g.connect(this.master);
+    src.start();
+    src.stop(ctx.currentTime + dur + 0.05);
+  }
+
+  _tone({ freq = 520, type = "sine", dur = 0.18, gain = 0.08, sweep = 0 }) {
+    if (!this.enabled || !this.ctx) return;
+    const ctx = this.ctx;
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = type;
+    o.frequency.setValueAtTime(freq, ctx.currentTime);
+    if (sweep) o.frequency.exponentialRampToValueAtTime(Math.max(freq + sweep, 30), ctx.currentTime + dur);
     g.gain.setValueAtTime(0.0001, ctx.currentTime);
     g.gain.exponentialRampToValueAtTime(gain, ctx.currentTime + 0.01);
     g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + dur);
-    osc.connect(g);
+    o.connect(g);
     g.connect(this.master);
-    osc.start();
-    osc.stop(ctx.currentTime + dur + 0.02);
+    o.start();
+    o.stop(ctx.currentTime + dur + 0.02);
   }
 
   hover() {
-    this._blip({ freq: 900, type: "sine", dur: 0.06, gain: 0.05 });
+    this._tone({ freq: 1250, type: "sine", dur: 0.05, gain: 0.03 });
   }
   menuOpen() {
-    this._blip({ freq: 180, type: "sawtooth", dur: 0.5, gain: 0.14, sweep: 700 });
+    this._whoosh({ from: 260, to: 2200, dur: 0.7, gain: 0.13 });
+    this._tone({ freq: 120, type: "sawtooth", dur: 0.5, gain: 0.06, sweep: 500 });
   }
   menuClose() {
-    this._blip({ freq: 700, type: "sawtooth", dur: 0.45, gain: 0.12, sweep: -560 });
+    this._whoosh({ from: 2200, to: 240, dur: 0.6, gain: 0.11 });
   }
   select() {
-    this._blip({ freq: 320, type: "triangle", dur: 0.35, gain: 0.16, sweep: 480 });
+    this._whoosh({ from: 420, to: 1500, dur: 0.35, gain: 0.1 });
+    this._tone({ freq: 660, type: "sine", dur: 0.22, gain: 0.06, sweep: 220 });
   }
 }
 

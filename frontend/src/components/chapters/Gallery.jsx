@@ -10,11 +10,19 @@ export default function Gallery() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.utils.toArray(".g-clip").forEach((el) => {
+      gsap.utils.toArray(".g-clip").forEach((el, i) => {
         gsap.fromTo(
           el,
-          { clipPath: "inset(0% 0% 100% 0%)" },
-          { clipPath: "inset(0% 0% 0% 0%)", duration: 1.2, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 85%" } }
+          { clipPath: "inset(45% 45% 45% 45%)", scale: 1.4, rotate: i % 2 ? 4 : -4, filter: "brightness(2.2) blur(6px)" },
+          {
+            clipPath: "inset(0% 0% 0% 0%)",
+            scale: 1,
+            rotate: 0,
+            filter: "brightness(1) blur(0px)",
+            duration: 1.4,
+            ease: "expo.out",
+            scrollTrigger: { trigger: el, start: "top 88%" },
+          }
         );
       });
       // parallax the inner images
