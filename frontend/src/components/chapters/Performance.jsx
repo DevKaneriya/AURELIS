@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ChevronDown } from "lucide-react";
 import { useStore } from "@/store";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -15,6 +16,7 @@ const STATS = [
 export default function Performance() {
   const section = useRef(null);
   const stats = useRef([]);
+  const bridge = useRef(null);
   const setSceneMode = useStore((s) => s.setSceneMode);
 
   useEffect(() => {
@@ -29,23 +31,38 @@ export default function Performance() {
       });
       tl.to({}, { duration: 1 }, 0);
 
-      const seg = 1 / STATS.length;
+      // stats occupy the first 78% so the tail is never empty
+      const span = 0.78;
+      const seg = span / STATS.length;
       stats.current.forEach((el, i) => {
         const at = i * seg;
         tl.fromTo(
           el,
           { opacity: 0, scale: 0.6, filter: "blur(24px)", yPercent: 20 },
-          { opacity: 1, scale: 1, filter: "blur(0px)", yPercent: 0, duration: seg * 0.42, ease: "power3.out" },
-          at + seg * 0.06
+          { opacity: 1, scale: 1, filter: "blur(0px)", yPercent: 0, duration: seg * 0.5, ease: "power3.out" },
+          at + 0.01
         );
-        if (i < STATS.length - 1) {
-          tl.to(
-            el,
-            { opacity: 0, scale: 1.5, filter: "blur(24px)", yPercent: -20, duration: seg * 0.4, ease: "power3.in" },
-            at + seg * 0.6
-          );
-        }
+        tl.to(
+          el,
+          { opacity: 0, scale: 1.5, filter: "blur(24px)", yPercent: -20, duration: seg * 0.45, ease: "power3.in" },
+          at + seg * 0.72
+        );
       });
+
+      // meaningful hand-off cue fills the previously-empty tail
+      tl.fromTo(
+        bridge.current,
+        { opacity: 0, y: 50, filter: "blur(16px)" },
+        { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.12, ease: "power3.out" },
+        0.8
+      );
+      // keep the tail alive with a subtle scroll-linked parallax drift
+      tl.fromTo(
+        bridge.current,
+        { yPercent: 6, scale: 0.96 },
+        { yPercent: -6, scale: 1, ease: "none", duration: 0.2 },
+        0.8
+      );
     }, section);
 
     const st = ScrollTrigger.create({
@@ -64,9 +81,8 @@ export default function Performance() {
   }, [setSceneMode]);
 
   return (
-    <section ref={section} id="chapter-performance" data-testid="chapter-performance" className="relative h-[320vh]">
+    <section ref={section} id="chapter-performance" data-testid="chapter-performance" className="relative h-[230vh]">
       <div className="sticky top-0 flex h-screen items-center justify-center overflow-hidden">
-        {/* readable scrim over the live car */}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(3,3,4,0.35),rgba(3,3,4,0.85))]" />
 
         <p className="absolute top-24 left-6 font-mono text-[11px] uppercase tracking-[0.4em] text-[#ff4400] sm:left-12">
@@ -81,18 +97,23 @@ export default function Performance() {
             style={{ willChange: "transform, opacity, filter" }}
           >
             <div className="flex items-end justify-center leading-none">
-              <span className="font-display text-[26vw] font-bold tracking-tighter text-white sm:text-[22vw]">
-                {s.value}
-              </span>
+              <span className="font-display text-[26vw] font-bold tracking-tighter text-white sm:text-[22vw]">{s.value}</span>
               <span className="mb-[3vw] ml-2 font-display text-[6vw] font-bold sm:text-[4vw]" style={{ color: s.accent }}>
                 {s.unit}
               </span>
             </div>
-            <span className="mt-2 font-mono text-[10px] uppercase tracking-[0.4em] text-[#9a9da4] sm:text-xs">
-              {s.label}
-            </span>
+            <span className="mt-2 font-mono text-[10px] uppercase tracking-[0.4em] text-[#9a9da4] sm:text-xs">{s.label}</span>
           </div>
         ))}
+
+        {/* hand-off cue into The Machine */}
+        <div ref={bridge} className="absolute flex flex-col items-center text-center opacity-0" data-testid="performance-bridge">
+          <span className="font-mono text-[11px] uppercase tracking-[0.4em] text-[#6e7178]">Next</span>
+          <h3 className="mt-3 font-display text-6xl font-bold uppercase leading-[0.9] tracking-tighter text-white sm:text-8xl">
+            The Machine
+          </h3>
+          <ChevronDown className="mt-6 animate-bounce text-[#ff4400]" size={26} />
+        </div>
       </div>
     </section>
   );
