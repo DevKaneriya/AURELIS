@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { BLUEPRINT, VELA_FRONT, VELA_REAR, SPECS } from "@/lib/assets";
+import { VELA_SIDE, VELA_FRONT, VELA_REAR, SPECS } from "@/lib/assets";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -94,7 +94,10 @@ export default function Design() {
         {/* blueprint board + spec sheet */}
         <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
           <div className="reveal-clip relative overflow-hidden rounded-xl lg:col-span-2">
-            <img src={BLUEPRINT} alt="AURELIS VELA design blueprint" className="h-full w-full object-cover" />
+            <img src={VELA_SIDE} alt="AURELIS VELA side profile" className="h-full w-full object-cover" />
+            <span className="absolute bottom-4 left-4 font-mono text-[10px] uppercase tracking-[0.3em] text-white/70">
+              Silhouette / Open Roadster
+            </span>
           </div>
 
           <div className="reveal-up rounded-xl border border-white/10 bg-black/40 p-7 backdrop-blur-xl">

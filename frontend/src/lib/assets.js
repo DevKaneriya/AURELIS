@@ -34,19 +34,19 @@ export const KINETIC_BG =
   "https://static.prod-images.emergentagent.com/jobs/c936820e-8150-4d0c-a1aa-bd78abf920ef/images/7937e459e056db8cbfa48463d3a8ab223acaa5e5c77b8b247068fe4eeb28636d.jpeg";
 
 export const VELA_FRONT =
-  "https://static.prod-images.emergentagent.com/jobs/c936820e-8150-4d0c-a1aa-bd78abf920ef/images/544acb609c4b08f4d34e0c587a5600baef92f231934d2d9ad8f597868240cfb7.jpeg";
+  "https://static.prod-images.emergentagent.com/jobs/c936820e-8150-4d0c-a1aa-bd78abf920ef/images/be6ab101843e8bef5d394ec99bd41ee075343f16e28efc53907e3ab4c3fcce4f.jpeg";
 
 export const VELA_REAR =
-  "https://static.prod-images.emergentagent.com/jobs/c936820e-8150-4d0c-a1aa-bd78abf920ef/images/959b15e95dd415f08dd33bcb04e8023500328c0c6fd84980b599d7aed47fb3c2.jpeg";
+  "https://static.prod-images.emergentagent.com/jobs/c936820e-8150-4d0c-a1aa-bd78abf920ef/images/8b09482649edfe2a4c3b2ab0fb3c68ce9b8ff96810259a63d231b627ba19b041.jpeg";
 
 export const BLUEPRINT =
   "https://customer-assets-jai6qajn.emergentagent.net/job_vela-reveal/artifacts/elwc6m0n_image.png";
 
 export const VELA_SIDE =
-  "https://static.prod-images.emergentagent.com/jobs/c936820e-8150-4d0c-a1aa-bd78abf920ef/images/2e8484f2fe938cd61f57f1d4da301c9dded6fb38a06b73e2d348009b71cd2ce1.jpeg";
+  "https://static.prod-images.emergentagent.com/jobs/c936820e-8150-4d0c-a1aa-bd78abf920ef/images/e6854ffb7dd2d6b0bcdad997e6f88eedde4216a0ff8fdcbbf5c0584806187339.jpeg";
 
 export const VELA_DETAIL =
-  "https://static.prod-images.emergentagent.com/jobs/c936820e-8150-4d0c-a1aa-bd78abf920ef/images/3a6ee74e32c74ccdea9bee0c6f01bc9a13971378c6f188d80c436f1ec4f2544c.jpeg";
+  "https://static.prod-images.emergentagent.com/jobs/c936820e-8150-4d0c-a1aa-bd78abf920ef/images/17d9e5a85952629ce89ad63b44ffce114df9c783444b5c83c7440523439e7038.jpeg";
 
 // Spec sheet from the AURELIS VELA blueprint.
 export const SPECS = [

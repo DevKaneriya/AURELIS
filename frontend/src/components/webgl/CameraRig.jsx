@@ -6,12 +6,12 @@ import { useStore, NAV } from "@/store";
 
 // Cinematic scroll-driven camera path.
 const PATH = [
-  new THREE.Vector3(0, 1.4, 10.5),
-  new THREE.Vector3(3.2, 1.05, 6.5),
-  new THREE.Vector3(5.4, 1.2, 0.6),
-  new THREE.Vector3(2.2, 2.7, -5.6),
-  new THREE.Vector3(-4.4, 1.35, -3.4),
-  new THREE.Vector3(0, 1.9, 11.5),
+  new THREE.Vector3(0, 1.7, 10.0), // establishing front shot (fills the frame)
+  new THREE.Vector3(0, 1.1, 6.2), // dolly straight in to the front
+  new THREE.Vector3(4.6, 1.0, 5.2), // swing to front three-quarter
+  new THREE.Vector3(7.2, 1.1, 0.4), // side profile
+  new THREE.Vector3(3.8, 1.9, -6.0), // rear three-quarter
+  new THREE.Vector3(0, 3.2, 12.0), // pull up & back
 ];
 
 const V = (x, y, z) => new THREE.Vector3(x, y, z);
@@ -96,8 +96,8 @@ export default function CameraRig({ reduced = false }) {
     const vpush = THREE.MathUtils.clamp(Math.abs(scrollState.velocity) * 0.02, 0, 0.6);
     desired.multiplyScalar(1 - vpush * 0.03);
 
-    camera.position.lerp(desired, reduced ? 0.12 : 0.07);
-    lookTarget.current.lerp(tmp.set(0, 0.55 + p * 0.2, 0), 0.06);
+    camera.position.lerp(desired, reduced ? 0.12 : 0.09);
+    lookTarget.current.lerp(tmp.set(0, 0.5 + p * 0.2, 0), 0.06);
     camera.lookAt(lookTarget.current);
   });
 

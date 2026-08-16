@@ -2,7 +2,6 @@ import React, { useRef, useMemo, useLayoutEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
-import { scrollState } from "@/lib/scrollState";
 import { useStore } from "@/store";
 import Vehicle, { BODY_FINISHES } from "./Vehicle";
 
@@ -68,6 +67,11 @@ function VehicleModel({ finish = "obsidian", accent = "#ff4400", wheel = "perfor
         });
       }
     });
+    // center on X/Z and sit the wheels on the floor (y=0)
+    const box = new THREE.Box3().setFromObject(car);
+    car.position.x -= (box.min.x + box.max.x) / 2;
+    car.position.z -= (box.min.z + box.max.z) / 2;
+    car.position.y -= box.min.y;
   }, [car]);
 
   useLayoutEffect(() => {
@@ -102,18 +106,21 @@ function VehicleModel({ finish = "obsidian", accent = "#ff4400", wheel = "perfor
   useFrame((state, delta) => {
     if (!outer.current) return;
     const t = state.clock.elapsedTime;
+    // Configurator = turntable. Everywhere else the car stays put (front toward
+    // the opening camera) and only sways gently — the CAMERA does the moving,
+    // so far->close dolly + orbit reads as one coherent motion.
     if (sceneMode === "configurator") outer.current.rotation.y += delta * 0.28;
-    else outer.current.rotation.y = scrollState.progress * Math.PI * 1.4 + Math.PI * 0.12 + Math.sin(t * 0.15) * 0.04;
-    outer.current.position.y = Math.sin(t * 0.6) * 0.012;
+    else outer.current.rotation.y = Math.PI + Math.sin(t * 0.2) * 0.05;
+    outer.current.position.y = Math.sin(t * 0.6) * 0.01;
   });
 
   return (
     <group ref={outer}>
       <primitive object={car} />
       {/* underglow accent */}
-      <mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[3.8, 1.7]} />
-        <meshBasicMaterial color={accent} transparent opacity={0.16} toneMapped={false} />
+      <mesh position={[0, 0.015, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[2.1, 48]} />
+        <meshBasicMaterial color={accent} transparent opacity={0.05} toneMapped={false} />
       </mesh>
     </group>
   );

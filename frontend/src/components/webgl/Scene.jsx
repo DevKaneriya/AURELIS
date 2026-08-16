@@ -36,7 +36,7 @@ export default function Scene() {
         powerPreference: "high-performance",
         alpha: false,
       }}
-      camera={{ position: [0, 1.4, 10.5], fov: 40, near: 0.1, far: 100 }}
+      camera={{ position: [0, 2.4, 14], fov: 40, near: 0.1, far: 100 }}
     >
       <color attach="background" args={["#030304"]} />
       <Suspense fallback={null}>

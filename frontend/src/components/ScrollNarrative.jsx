@@ -56,7 +56,9 @@ export default function ScrollNarrative() {
         );
       };
 
-      beat(beyond.current, 0.015, 0.12);
+      // "Beyond Motion." is present the instant you arrive (fills the first view)
+      tl.set(beyond.current, { opacity: 1, y: 0, filter: "blur(0px)" }, 0);
+      tl.to(beyond.current, { opacity: 0, y: -60, filter: "blur(12px)", duration: 0.05, ease: "power2.in" }, 0.12);
       beat(reveal.current, 0.17, 0.29);
       beat(kinetic.current, 0.35, 0.5);
       beat(perf.current, 0.55, 0.66);

@@ -29,7 +29,7 @@ export default function Effects({ mobile = false }) {
       />
       <ChromaticAberration
         blendFunction={BlendFunction.NORMAL}
-        offset={new THREE.Vector2(0.0007, 0.0009)}
+        offset={new THREE.Vector2(0.0002, 0.0003)}
       />
       <Vignette eskil={false} offset={0.2} darkness={1.0} />
       <Noise premultiply blendFunction={BlendFunction.OVERLAY} opacity={0.35} />

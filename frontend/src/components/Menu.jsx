@@ -104,7 +104,7 @@ export default function Menu() {
         Navigation / Chapters
       </div>
 
-      <ul className="relative z-10 flex flex-col gap-1 px-6 sm:gap-2 sm:px-10 md:px-16">
+      <ul className="relative z-10 mx-auto flex w-full max-w-6xl flex-col gap-1 px-6 sm:px-10 md:px-16">
         {NAV.map((item, i) => (
           <li key={item.id} style={{ perspective: 800 }}>
             <button
@@ -123,7 +123,7 @@ export default function Menu() {
                 {item.index}
               </span>
               <span
-                className="font-display text-4xl font-bold uppercase leading-[0.95] tracking-tight text-[#f2f3f5]/50 transition-all duration-500 group-hover:translate-x-3 group-hover:text-[#f2f3f5] sm:text-6xl md:text-7xl lg:text-8xl"
+                className="font-display text-2xl font-bold uppercase leading-[1.08] tracking-tight text-[#f2f3f5]/45 transition-all duration-500 group-hover:translate-x-3 group-hover:text-[#f2f3f5] sm:text-3xl md:text-4xl lg:text-5xl"
                 style={{ willChange: "transform" }}
               >
                 {item.label}
