@@ -1,4 +1,4 @@
-// Generated, original AURELIS assets (no stock imagery).
+// Generated + provided original AURELIS assets (no stock imagery).
 export const MATERIALS = [
   {
     key: "metal",
@@ -32,3 +32,26 @@ export const MATERIALS = [
 
 export const KINETIC_BG =
   "https://static.prod-images.emergentagent.com/jobs/c936820e-8150-4d0c-a1aa-bd78abf920ef/images/7937e459e056db8cbfa48463d3a8ab223acaa5e5c77b8b247068fe4eeb28636d.jpeg";
+
+export const VELA_FRONT =
+  "https://static.prod-images.emergentagent.com/jobs/c936820e-8150-4d0c-a1aa-bd78abf920ef/images/544acb609c4b08f4d34e0c587a5600baef92f231934d2d9ad8f597868240cfb7.jpeg";
+
+export const VELA_REAR =
+  "https://static.prod-images.emergentagent.com/jobs/c936820e-8150-4d0c-a1aa-bd78abf920ef/images/959b15e95dd415f08dd33bcb04e8023500328c0c6fd84980b599d7aed47fb3c2.jpeg";
+
+export const BLUEPRINT =
+  "https://customer-assets-jai6qajn.emergentagent.net/job_vela-reveal/artifacts/elwc6m0n_image.png";
+
+// Spec sheet from the AURELIS VELA blueprint.
+export const SPECS = [
+  ["Length", "5,210 mm"],
+  ["Width", "2,050 mm"],
+  ["Height", "1,150 mm"],
+  ["Wheelbase", "3,150 mm"],
+  ["Powertrain", "Quad Motor AWD"],
+  ["Power", "1,360 kW / 1,850 hp"],
+  ["0–100 km/h", "1.85 s"],
+  ["Top Speed", "> 400 km/h"],
+  ["Battery", "Solid State · 120 kWh"],
+  ["Range", "> 700 km (WLTP)"],
+];

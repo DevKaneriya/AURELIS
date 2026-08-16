@@ -6,10 +6,11 @@ import { audio } from "@/lib/audio";
 
 const FLARES = {
   experience: "radial-gradient(60% 80% at 70% 40%, rgba(0,243,255,0.18), transparent 70%)",
-  motion: "radial-gradient(70% 90% at 30% 60%, rgba(255,68,0,0.22), transparent 70%)",
-  machine: "radial-gradient(55% 75% at 60% 50%, rgba(159,180,255,0.16), transparent 70%)",
   material: "radial-gradient(60% 80% at 40% 40%, rgba(233,228,218,0.14), transparent 70%)",
+  performance: "radial-gradient(70% 90% at 30% 60%, rgba(255,68,0,0.22), transparent 70%)",
+  machine: "radial-gradient(55% 75% at 60% 50%, rgba(159,180,255,0.16), transparent 70%)",
   configurator: "radial-gradient(60% 80% at 55% 45%, rgba(201,162,75,0.16), transparent 70%)",
+  design: "radial-gradient(60% 90% at 50% 45%, rgba(120,140,200,0.16), transparent 70%)",
   contact: "radial-gradient(60% 80% at 50% 70%, rgba(255,68,0,0.18), transparent 70%)",
 };
 

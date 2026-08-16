@@ -14,17 +14,29 @@ const PATH = [
   new THREE.Vector3(0, 1.9, 11.5),
 ];
 
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+
 const MENU_POSES = {
-  default: new THREE.Vector3(4.8, 2.1, 5.2),
-  experience: new THREE.Vector3(3.4, 1.1, 6.2),
-  motion: new THREE.Vector3(6.2, 0.9, 1.2),
-  machine: new THREE.Vector3(1.6, 1.9, 4.2),
-  material: new THREE.Vector3(2.4, 0.7, 4.6),
-  configurator: new THREE.Vector3(4.2, 1.1, 4.4),
-  contact: new THREE.Vector3(0, 1.6, 9.5),
+  default: V(5.0, 2.1, 5.4),
+  experience: V(3.4, 1.1, 6.2),
+  material: V(2.4, 0.7, 4.8),
+  performance: V(7.6, 0.9, 0.6),
+  machine: V(1.6, 1.9, 4.4),
+  configurator: V(5.2, 1.2, 6.0),
+  design: V(0, 2.8, 7.4),
+  contact: V(0, 1.6, 9.5),
 };
 
-const CONFIG_POSE = new THREE.Vector3(4.6, 1.35, 5.6);
+const CONFIG_POSE = V(5.4, 1.15, 6.2);
+const PERF_POSE = V(8.0, 0.75, 0.5);
+
+const MACHINE_POSES = {
+  energy: V(-4.8, 1.1, 4.6),
+  intelligence: V(3.2, 1.35, 4.4),
+  thermal: V(6.0, 0.85, 2.6),
+  structure: V(0.2, 3.4, 5.6),
+  aerodynamics: V(-5.6, 1.0, 3.2),
+};
 
 export default function CameraRig({ reduced = false }) {
   const { camera } = useThree();
@@ -35,32 +47,42 @@ export default function CameraRig({ reduced = false }) {
 
   const menuOpen = useStore((s) => s.menuOpen);
   const menuHover = useStore((s) => s.menuHover);
-  const configuratorActive = useStore((s) => s.configuratorActive);
+  const sceneMode = useStore((s) => s.sceneMode);
+  const machineSystem = useStore((s) => s.machineSystem);
 
   useFrame(() => {
+    let pose = null;
+    let lookY = 0.55;
+
     if (menuOpen) {
-      const pose = MENU_POSES[menuHover] || MENU_POSES.default;
-      desired.copy(pose);
-      camera.position.lerp(desired, 0.045);
-      lookTarget.current.lerp(tmp.set(0, 0.6, 0), 0.05);
-      camera.lookAt(lookTarget.current);
-      return;
+      pose = MENU_POSES[menuHover] || MENU_POSES.default;
+      lookY = 0.6;
+    } else if (sceneMode === "configurator") {
+      pose = CONFIG_POSE;
+      lookY = 0.5;
+    } else if (sceneMode === "performance") {
+      pose = PERF_POSE;
+      lookY = 0.55;
+    } else if (sceneMode === "machine") {
+      pose = MACHINE_POSES[machineSystem] || MACHINE_POSES.energy;
+      lookY = 0.55;
     }
 
-    if (configuratorActive) {
-      desired.copy(CONFIG_POSE);
+    if (pose) {
+      desired.copy(pose);
       if (!reduced) {
         pointer.sx += (pointer.x - pointer.sx) * 0.04;
         pointer.sy += (pointer.y - pointer.sy) * 0.04;
-        desired.x += pointer.sx * 0.7;
+        desired.x += pointer.sx * 0.8;
         desired.y += pointer.sy * 0.4;
       }
       camera.position.lerp(desired, 0.05);
-      lookTarget.current.lerp(tmp.set(0, 0.55, 0), 0.05);
+      lookTarget.current.lerp(tmp.set(0, lookY, 0), 0.05);
       camera.lookAt(lookTarget.current);
       return;
     }
 
+    // default scroll cinematics
     const p = THREE.MathUtils.clamp(scrollState.progress, 0, 1);
     curve.getPointAt(p, desired);
 

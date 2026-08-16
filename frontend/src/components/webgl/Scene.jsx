@@ -25,6 +25,7 @@ export default function Scene() {
   const reduced = prefersReducedMotion();
   const finish = useStore((s) => s.finish) || "obsidian";
   const accent = useStore((s) => s.accent) || "#ff4400";
+  const wheel = useStore((s) => s.wheel) || "performance";
 
   return (
     <Canvas
@@ -40,7 +41,7 @@ export default function Scene() {
       <color attach="background" args={["#030304"]} />
       <Suspense fallback={null}>
         <Atmosphere mobile={mobile} reduced={reduced} />
-        <Vehicle finish={finish} accent={accent} />
+        <Vehicle finish={finish} accent={accent} wheel={wheel} />
         <CameraRig reduced={reduced} />
         {!reduced && <Effects mobile={mobile} />}
         <ReadySignal />

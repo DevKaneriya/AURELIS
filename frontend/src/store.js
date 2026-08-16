@@ -7,9 +7,12 @@ export const useStore = create((set) => ({
   menuHover: null,
   soundOn: false,
   chapter: 0,
+
   finish: "obsidian",
   accent: "#ff4400",
-  configuratorActive: false,
+  wheel: "performance",
+  sceneMode: "scroll", // scroll | configurator | performance | machine
+  machineSystem: "energy",
 
   setLoaded: (v) => set({ loaded: v }),
   setEntered: (v) => set({ entered: v }),
@@ -19,16 +22,18 @@ export const useStore = create((set) => ({
   setChapter: (v) => set({ chapter: v }),
   setFinish: (v) => set({ finish: v }),
   setAccent: (v) => set({ accent: v }),
-  setConfiguratorActive: (v) => set({ configuratorActive: v }),
+  setWheel: (v) => set({ wheel: v }),
+  setSceneMode: (v) => set({ sceneMode: v }),
+  setMachineSystem: (v) => set({ machineSystem: v }),
 }));
 
 // Navigation model shared by Menu + CameraRig previews.
-// kind 'hero' -> fraction of the hero scroll; kind 'el' -> scroll to element selector.
 export const NAV = [
   { id: "experience", index: "01", label: "EXPERIENCE", tag: "The Reveal", kind: "hero", value: 0.0 },
-  { id: "motion", index: "02", label: "MOTION", tag: "Kinetic Energy", kind: "hero", value: 0.45 },
-  { id: "machine", index: "03", label: "MACHINE", tag: "Core Systems", kind: "hero", value: 0.78 },
-  { id: "material", index: "04", label: "MATERIAL", tag: "Is Memory", kind: "el", value: "#chapter-material" },
+  { id: "material", index: "02", label: "MATERIAL", tag: "Is Memory", kind: "el", value: "#chapter-material" },
+  { id: "performance", index: "03", label: "PERFORMANCE", tag: "The Numbers", kind: "el", value: "#chapter-performance" },
+  { id: "machine", index: "04", label: "MACHINE", tag: "Core Systems", kind: "el", value: "#chapter-machine" },
   { id: "configurator", index: "05", label: "CONFIGURATOR", tag: "Make It Yours", kind: "el", value: "#chapter-configurator" },
-  { id: "contact", index: "06", label: "CONTACT", tag: "Begin", kind: "el", value: "#chapter-finale" },
+  { id: "design", index: "06", label: "DESIGN", tag: "Purpose Driven", kind: "el", value: "#chapter-design" },
+  { id: "contact", index: "07", label: "CONTACT", tag: "Begin", kind: "el", value: "#chapter-finale" },
 ];

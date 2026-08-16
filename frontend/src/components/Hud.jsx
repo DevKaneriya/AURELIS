@@ -87,6 +87,7 @@ export default function Hud() {
             data-cursor="hover"
             data-testid="sound-toggle"
             aria-label="Toggle sound"
+            aria-pressed={soundOn}
             className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-[#6e7178] transition-colors hover:text-white"
           >
             {soundOn ? <Volume2 size={14} /> : <VolumeX size={14} />}

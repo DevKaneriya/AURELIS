@@ -26,6 +26,20 @@ Frontend-only. No backend/auth/db.
   to the WebGL layer without per-frame React renders. `store.js` = zustand + NAV model.
 - **Sound:** `lib/audio.js` Web Audio engine (ambient drone + UI blips), scroll-velocity → brightness.
 
+## Implemented (2026-06 build 3)
+- Replaced the vehicle with a sleeker hyper-GT matching the user's blueprint: teardrop glass canopy,
+  pointed nose, signature LED front blades, full-width rear light bar, aero diffuser + rear lip, and
+  3 selectable wheel styles (Aero solid disc / Performance 10-spoke / Sculpted 5-spoke).
+- CONFIGURATOR is now fully functional: Body / Wheels / Interior all mutate the live 3D car in real
+  time on a slow turntable, with a live spec summary panel reflecting the exact configuration.
+- NEW Chapter 03 PERFORMANCE: pinned, scrubbed giant morphing numbers (1.85s / 1,850 hp / 400+ / 700 km).
+- NEW Chapter 04 MACHINE: interactive 5-system selector (Energy/Intelligence/Thermal/Structure/Aero)
+  that recolors the car accent and repositions the camera per system.
+- NEW Chapter 06 DESIGN: editorial "Purpose Driven Beauty" section using the provided blueprint board
+  + two generated hero renders + full spec sheet, with clip/reveal animations.
+- Camera driven by a unified sceneMode (scroll/configurator/performance/machine) + per-system poses.
+  Menu expanded to 7 chapters. Verified by testing agent iteration 3: 100% pass, 0 JS errors.
+
 ## Implemented (2026-06 build 2)
 - Chapter 04 MATERIAL: pinned horizontal-scroll gallery of 4 original generated material textures
   (anodized alloy / carbon / liquid glass / atelier hide) with GSAP containerAnimation clip-wipe reveals; mobile vertical fallback.
