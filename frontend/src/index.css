@@ -115,3 +115,32 @@ body.no-scroll {
 .kenburns {
     animation: kenburns 16s ease-in-out infinite alternate;
 }
+
+@keyframes dash {
+    to {
+        background-position-x: -22px;
+    }
+}
+@keyframes streak {
+    0% {
+        opacity: 0.3;
+        transform: scaleX(0.6);
+    }
+    50% {
+        opacity: 1;
+        transform: scaleX(1);
+    }
+    100% {
+        opacity: 0.3;
+        transform: scaleX(0.6);
+    }
+}
+@keyframes carbob {
+    0%,
+    100% {
+        transform: translate(-50%, -50%) rotate(-0.5deg);
+    }
+    50% {
+        transform: translate(-50%, calc(-50% - 1px)) rotate(0.5deg);
+    }
+}

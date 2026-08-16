@@ -3,6 +3,20 @@ import { gsap } from "gsap";
 import { useStore } from "@/store";
 import { audio } from "@/lib/audio";
 
+const CarSVG = () => (
+  <svg width="58" height="22" viewBox="0 0 58 22" fill="none" aria-hidden>
+    <path
+      d="M3 15 L9 15 C11 9 17 7 23 7 L36 7 C42 7 47 10 51 13 L55 14 C56.5 14.2 56.5 15.8 55 16 L3 16 C1.8 16 1.8 15 3 15 Z"
+      fill="#eef1f5"
+    />
+    <path d="M17 8 L33 8 C37 8 40 9.6 43 12 L18 12 C16.5 10.5 16.5 8.8 17 8 Z" fill="#0a0c12" opacity="0.9" />
+    <rect x="6" y="12.5" width="46" height="1.4" fill="#ff4400" />
+    <circle cx="52.5" cy="12.5" r="1.4" fill="#00f3ff" />
+    <circle cx="17" cy="16" r="3.6" fill="#0a0a0b" stroke="#ff4400" strokeWidth="0.8" />
+    <circle cx="41" cy="16" r="3.6" fill="#0a0a0b" stroke="#ff4400" strokeWidth="0.8" />
+  </svg>
+);
+
 export default function Loader() {
   const [pct, setPct] = useState(0);
   const rootRef = useRef(null);
@@ -87,11 +101,57 @@ export default function Loader() {
     >
       <div
         ref={counterRef}
-        className="absolute font-mono text-sm tracking-[0.3em] text-[#6e7178]"
-        data-testid="loader-counter"
+        className="absolute flex w-[72vw] max-w-3xl flex-col items-center gap-7"
       >
-        {String(pct).padStart(3, "0")}
-        <span className="text-[#ff4400]"> %</span>
+        <div className="font-mono text-sm tracking-[0.3em] text-[#6e7178]">
+          <span data-testid="loader-counter">{String(pct).padStart(3, "0")}</span>
+          <span className="text-[#ff4400]"> %</span>
+        </div>
+
+        {/* race track */}
+        <div className="relative h-16 w-full">
+          {/* base line */}
+          <div className="absolute left-0 right-0 top-1/2 h-px -translate-y-1/2 bg-white/12" />
+          {/* moving lane dashes */}
+          <div
+            className="absolute left-0 right-9 top-1/2 h-px -translate-y-1/2 opacity-50"
+            style={{
+              backgroundImage:
+                "repeating-linear-gradient(90deg,#6e7178 0 10px,transparent 10px 22px)",
+              backgroundSize: "22px 100%",
+              animation: "dash 0.5s linear infinite",
+            }}
+          />
+          {/* checkered finish flag */}
+          <div className="absolute right-0 top-1/2 flex -translate-y-1/2 flex-col items-center">
+            <div
+              className="h-9 w-6 rounded-[2px]"
+              style={{
+                backgroundImage:
+                  "repeating-conic-gradient(#ffffff 0 25%, #0a0a0b 0 50%)",
+                backgroundSize: "8px 8px",
+              }}
+            />
+          </div>
+
+          {/* the car */}
+          <div
+            className="absolute top-1/2"
+            style={{ left: `${3 + Math.min(pct, 100) * 0.84}%`, animation: "carbob 0.5s ease-in-out infinite", transform: "translate(-50%,-50%)" }}
+          >
+            {/* speed streaks */}
+            <div className="absolute right-full top-1/2 mr-1 flex origin-right -translate-y-1/2 flex-col gap-1.5">
+              <span className="block h-px w-12 origin-right bg-gradient-to-l from-[#ff4400] to-transparent" style={{ animation: "streak 0.35s linear infinite" }} />
+              <span className="block h-px w-8 origin-right bg-gradient-to-l from-white to-transparent" style={{ animation: "streak 0.45s linear infinite" }} />
+              <span className="block h-px w-10 origin-right bg-gradient-to-l from-[#00f3ff] to-transparent" style={{ animation: "streak 0.4s linear infinite" }} />
+            </div>
+            <CarSVG />
+          </div>
+        </div>
+
+        <div className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#6e7178]">
+          {pct < 100 ? "Launch Control" : "Ready"}
+        </div>
       </div>
 
       <h1
