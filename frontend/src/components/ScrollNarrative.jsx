@@ -3,11 +3,13 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useStore } from "@/store";
 import { scrollController } from "@/lib/scrollController";
+import { scrollState } from "@/lib/scrollState";
 import { audio } from "@/lib/audio";
 
 // Fixed cinematic text beats driven by ONE scrubbed master timeline.
 export default function ScrollNarrative() {
   const spacerRef = useRef(null);
+  const overlayRef = useRef(null);
   const beyond = useRef(null);
   const reveal = useRef(null);
   const kinetic = useRef(null);
@@ -25,6 +27,17 @@ export default function ScrollNarrative() {
           start: "top top",
           end: "bottom bottom",
           scrub: 1,
+          onUpdate: (self) => {
+            scrollState.progress = self.progress;
+          },
+          onToggle: (self) => {
+            if (overlayRef.current)
+              gsap.to(overlayRef.current, {
+                autoAlpha: self.isActive ? 1 : 0,
+                duration: 0.5,
+                ease: "power2.out",
+              });
+          },
         },
       });
       tl.to({}, { duration: 1 }, 0); // establish normalized length
@@ -74,7 +87,7 @@ export default function ScrollNarrative() {
   return (
     <>
       {/* fixed narrative overlay (above webgl, below hud) */}
-      <div className="pointer-events-none fixed inset-0 z-[10] flex items-center justify-center px-6 text-center">
+      <div ref={overlayRef} className="pointer-events-none fixed inset-0 z-[10] flex items-center justify-center px-6 text-center">
         <div ref={beyond} className="absolute opacity-0" data-testid="beat-beyond">
           <h2 className="font-display text-[13vw] font-bold uppercase leading-[0.85] tracking-tighter text-white sm:text-[11vw]">
             Beyond

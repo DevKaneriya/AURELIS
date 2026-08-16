@@ -36,17 +36,18 @@ export default function Atmosphere({ mobile = false, reduced = false }) {
     <>
       <fog ref={fogRef} attach="fog" args={["#050507", 9, 30]} />
 
-      <ambientLight intensity={0.12} />
+      <ambientLight intensity={0.28} />
       <spotLight
         ref={keyLight}
         position={[5, 8, 5]}
         angle={0.5}
         penumbra={1}
-        intensity={40}
+        intensity={70}
         color="#cfd6ff"
         castShadow={!mobile}
         shadow-mapSize={mobile ? 512 : 1024}
       />
+      <hemisphereLight args={["#8ea0d0", "#0a0a0f", 0.5]} />
       <pointLight ref={rimAmber} position={[-6, 1.5, -3]} color="#ff4400" intensity={6} distance={26} />
       <pointLight ref={rimCyan} position={[6, 2, 4]} color="#00f3ff" intensity={5} distance={26} />
 

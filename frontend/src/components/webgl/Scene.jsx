@@ -24,6 +24,7 @@ export default function Scene() {
   const mobile = isMobileFn();
   const reduced = prefersReducedMotion();
   const finish = useStore((s) => s.finish) || "obsidian";
+  const accent = useStore((s) => s.accent) || "#ff4400";
 
   return (
     <Canvas
@@ -39,7 +40,7 @@ export default function Scene() {
       <color attach="background" args={["#030304"]} />
       <Suspense fallback={null}>
         <Atmosphere mobile={mobile} reduced={reduced} />
-        <Vehicle finish={finish} />
+        <Vehicle finish={finish} accent={accent} />
         <CameraRig reduced={reduced} />
         {!reduced && <Effects mobile={mobile} />}
         <ReadySignal />

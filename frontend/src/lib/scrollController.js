@@ -26,9 +26,7 @@ class ScrollController {
 
     lenis.on("scroll", (e) => {
       ScrollTrigger.update();
-      const limit = lenis.limit || 1;
       scrollState.raw = lenis.scroll;
-      scrollState.progress = limit > 0 ? lenis.scroll / limit : 0;
       scrollState.velocity = e.velocity || 0;
     });
 
@@ -61,6 +59,22 @@ class ScrollController {
     this.lenis.resize();
     const limit = this.lenis.limit || 0;
     this.lenis.scrollTo(limit * fraction, { duration: 1.6, ...opts });
+  }
+
+  // Scroll to a fraction of the hero (pinned WebGL) section only.
+  scrollToHero(fraction, opts = {}) {
+    if (!this.lenis) return;
+    this.lenis.resize();
+    const sp = document.querySelector('[data-testid="scroll-spacer"]');
+    const range = sp ? sp.offsetHeight - window.innerHeight : this.lenis.limit;
+    this.lenis.scrollTo(Math.max(0, range * fraction), { duration: 1.6, ...opts });
+  }
+
+  // Scroll to an element (selector or node).
+  scrollToEl(target, opts = {}) {
+    if (!this.lenis) return;
+    this.lenis.resize();
+    this.lenis.scrollTo(target, { duration: 1.6, offset: 0, ...opts });
   }
 
   refresh() {

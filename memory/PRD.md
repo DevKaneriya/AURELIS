@@ -26,6 +26,17 @@ Frontend-only. No backend/auth/db.
   to the WebGL layer without per-frame React renders. `store.js` = zustand + NAV model.
 - **Sound:** `lib/audio.js` Web Audio engine (ambient drone + UI blips), scroll-velocity → brightness.
 
+## Implemented (2026-06 build 2)
+- Chapter 04 MATERIAL: pinned horizontal-scroll gallery of 4 original generated material textures
+  (anodized alloy / carbon / liquid glass / atelier hide) with GSAP containerAnimation clip-wipe reveals; mobile vertical fallback.
+- Chapter 05 CONFIGURATOR: live 3D — Body (Obsidian/Silver/Pearl) swaps real vehicle paint, Interior
+  (Carbon/Atelier/Midnight) drives the accent (rear light bar / rims / underglow), Wheels selector; camera reposes when active.
+- FINALE: velocity-reactive kinetic marquee (scroll speed warps/skews the type), masked "THE FUTURE
+  DOESN'T WAIT." line reveal, parallax generated backdrop, contact CTA + footer.
+- Decoupled camera progress (hero-only ScrollTrigger) from total page scroll; menu now navigates to
+  real sections via scrollToHero/scrollToEl; hero overlay auto-hides past the hero.
+- Verified by testing agent iteration 2: 100% frontend pass, 0 JS errors. Added aria-pressed to configurator controls.
+
 ## Implemented (2026-06 build 1)
 - Chapter 00 Arrival loader: mono counter → spatial AURELIS wordmark reveal → BEYOND MOTION → dissolve.
 - Chapter 01 Hero: cinematic WebGL scene, procedural VELA vehicle, moving lights, pointer parallax.

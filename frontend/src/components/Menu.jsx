@@ -4,13 +4,12 @@ import { useStore, NAV } from "@/store";
 import { scrollController } from "@/lib/scrollController";
 import { audio } from "@/lib/audio";
 
-// Per-item background flare gradients (previewed on hover).
 const FLARES = {
   experience: "radial-gradient(60% 80% at 70% 40%, rgba(0,243,255,0.18), transparent 70%)",
   motion: "radial-gradient(70% 90% at 30% 60%, rgba(255,68,0,0.22), transparent 70%)",
   machine: "radial-gradient(55% 75% at 60% 50%, rgba(159,180,255,0.16), transparent 70%)",
-  configurator: "radial-gradient(60% 80% at 40% 40%, rgba(233,228,218,0.14), transparent 70%)",
-  lab: "radial-gradient(80% 100% at 50% 50%, rgba(0,217,230,0.2), transparent 70%)",
+  material: "radial-gradient(60% 80% at 40% 40%, rgba(233,228,218,0.14), transparent 70%)",
+  configurator: "radial-gradient(60% 80% at 55% 45%, rgba(201,162,75,0.16), transparent 70%)",
   contact: "radial-gradient(60% 80% at 50% 70%, rgba(255,68,0,0.18), transparent 70%)",
 };
 
@@ -40,54 +39,25 @@ export default function Menu() {
       if (soundOn) audio.menuOpen();
       root.style.pointerEvents = "auto";
       gsap.set(root, { display: "flex" });
-      // 1. background wash
-      tl.fromTo(
-        bgRef.current,
-        { opacity: 0 },
-        { opacity: 1, duration: 0.5, ease: "power2.out" }
-      );
+      tl.fromTo(bgRef.current, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out" });
       tl.fromTo(
         root,
         { clipPath: "inset(0% 0% 100% 0%)" },
         { clipPath: "inset(0% 0% 0% 0%)", duration: 0.7, ease: "power4.inOut" },
         0
       );
-      // 2. nav items cascade
       tl.fromTo(
         itemsRef.current,
         { yPercent: 120, opacity: 0, rotateX: -40 },
-        {
-          yPercent: 0,
-          opacity: 1,
-          rotateX: 0,
-          duration: 0.9,
-          ease: "power4.out",
-          stagger: 0.07,
-        },
+        { yPercent: 0, opacity: 1, rotateX: 0, duration: 0.9, ease: "power4.out", stagger: 0.07 },
         0.35
       );
-      // 3. meta / footer
-      tl.fromTo(
-        metaRef.current,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
-        0.7
-      );
+      tl.fromTo(metaRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.7);
     } else {
       if (soundOn && root.style.display === "flex") audio.menuClose();
-      tl.to(itemsRef.current, {
-        yPercent: -120,
-        opacity: 0,
-        duration: 0.5,
-        ease: "power3.in",
-        stagger: 0.04,
-      });
+      tl.to(itemsRef.current, { yPercent: -120, opacity: 0, duration: 0.5, ease: "power3.in", stagger: 0.04 });
       tl.to(metaRef.current, { opacity: 0, duration: 0.3 }, 0);
-      tl.to(
-        root,
-        { clipPath: "inset(0% 0% 100% 0%)", duration: 0.6, ease: "power4.inOut" },
-        0.2
-      );
+      tl.to(root, { clipPath: "inset(0% 0% 100% 0%)", duration: 0.6, ease: "power4.inOut" }, 0.2);
       tl.to(bgRef.current, { opacity: 0, duration: 0.5 }, 0.2);
       tl.set(root, {
         display: "none",
@@ -95,10 +65,11 @@ export default function Menu() {
         onComplete: () => {
           root.style.pointerEvents = "none";
           setMenuHover(null);
-          // deterministic: run the navigation scroll only after close completes
-          if (pendingTarget.current != null) {
-            scrollController.scrollToProgress(pendingTarget.current, { duration: 1.6 });
+          const it = pendingTarget.current;
+          if (it) {
             pendingTarget.current = null;
+            if (it.kind === "hero") scrollController.scrollToHero(it.value);
+            else scrollController.scrollToEl(it.value);
           }
         },
       });
@@ -107,9 +78,9 @@ export default function Menu() {
   }, [menuOpen, soundOn, setMenuHover]);
 
   const handleSelect = (item) => {
-    if (!menuOpen) return; // guard against firing mid-close
+    if (!menuOpen) return;
     if (soundOn) audio.select();
-    pendingTarget.current = item.target; // scroll fires on close onComplete
+    pendingTarget.current = item;
     setMenuOpen(false);
   };
 
@@ -120,7 +91,6 @@ export default function Menu() {
       style={{ clipPath: "inset(0% 0% 100% 0%)", pointerEvents: "none" }}
       data-testid="immersive-menu"
     >
-      {/* glass + flare background */}
       <div className="absolute inset-0 bg-black/70 backdrop-blur-2xl" />
       <div
         ref={bgRef}
@@ -129,12 +99,10 @@ export default function Menu() {
       />
       <div className="pointer-events-none absolute inset-0 border border-white/5" />
 
-      {/* section label */}
       <div className="absolute left-6 top-24 font-mono text-[10px] uppercase tracking-[0.4em] text-[#6e7178] sm:left-10">
         Navigation / Chapters
       </div>
 
-      {/* nav items */}
       <ul className="relative z-10 flex flex-col gap-1 px-6 sm:gap-2 sm:px-10 md:px-16">
         {NAV.map((item, i) => (
           <li key={item.id} style={{ perspective: 800 }}>
@@ -154,7 +122,7 @@ export default function Menu() {
                 {item.index}
               </span>
               <span
-                className="font-display text-4xl font-bold uppercase leading-[0.95] tracking-tight text-[#f2f3f5]/50 transition-all duration-500 group-hover:text-[#f2f3f5] group-hover:translate-x-3 sm:text-6xl md:text-7xl lg:text-8xl"
+                className="font-display text-4xl font-bold uppercase leading-[0.95] tracking-tight text-[#f2f3f5]/50 transition-all duration-500 group-hover:translate-x-3 group-hover:text-[#f2f3f5] sm:text-6xl md:text-7xl lg:text-8xl"
                 style={{ willChange: "transform" }}
               >
                 {item.label}
@@ -167,7 +135,6 @@ export default function Menu() {
         ))}
       </ul>
 
-      {/* meta footer */}
       <div
         ref={metaRef}
         className="absolute bottom-8 left-6 right-6 flex flex-col justify-between gap-3 font-mono text-[10px] uppercase tracking-[0.3em] text-[#6e7178] sm:left-10 sm:right-10 sm:flex-row"

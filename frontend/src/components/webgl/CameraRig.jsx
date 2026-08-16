@@ -14,16 +14,17 @@ const PATH = [
   new THREE.Vector3(0, 1.9, 11.5),
 ];
 
-// Menu preview camera poses per nav id.
 const MENU_POSES = {
   default: new THREE.Vector3(4.8, 2.1, 5.2),
   experience: new THREE.Vector3(3.4, 1.1, 6.2),
   motion: new THREE.Vector3(6.2, 0.9, 1.2),
   machine: new THREE.Vector3(1.6, 1.9, 4.2),
+  material: new THREE.Vector3(2.4, 0.7, 4.6),
   configurator: new THREE.Vector3(4.2, 1.1, 4.4),
-  lab: new THREE.Vector3(0.2, 3.4, 6.8),
   contact: new THREE.Vector3(0, 1.6, 9.5),
 };
+
+const CONFIG_POSE = new THREE.Vector3(4.6, 1.35, 5.6);
 
 export default function CameraRig({ reduced = false }) {
   const { camera } = useThree();
@@ -34,11 +35,11 @@ export default function CameraRig({ reduced = false }) {
 
   const menuOpen = useStore((s) => s.menuOpen);
   const menuHover = useStore((s) => s.menuHover);
+  const configuratorActive = useStore((s) => s.configuratorActive);
 
   useFrame(() => {
     if (menuOpen) {
-      const id = menuHover || "default";
-      const pose = MENU_POSES[id] || MENU_POSES.default;
+      const pose = MENU_POSES[menuHover] || MENU_POSES.default;
       desired.copy(pose);
       camera.position.lerp(desired, 0.045);
       lookTarget.current.lerp(tmp.set(0, 0.6, 0), 0.05);
@@ -46,10 +47,23 @@ export default function CameraRig({ reduced = false }) {
       return;
     }
 
+    if (configuratorActive) {
+      desired.copy(CONFIG_POSE);
+      if (!reduced) {
+        pointer.sx += (pointer.x - pointer.sx) * 0.04;
+        pointer.sy += (pointer.y - pointer.sy) * 0.04;
+        desired.x += pointer.sx * 0.7;
+        desired.y += pointer.sy * 0.4;
+      }
+      camera.position.lerp(desired, 0.05);
+      lookTarget.current.lerp(tmp.set(0, 0.55, 0), 0.05);
+      camera.lookAt(lookTarget.current);
+      return;
+    }
+
     const p = THREE.MathUtils.clamp(scrollState.progress, 0, 1);
     curve.getPointAt(p, desired);
 
-    // pointer parallax (skip if reduced motion)
     if (!reduced) {
       pointer.sx += (pointer.x - pointer.sx) * 0.045;
       pointer.sy += (pointer.y - pointer.sy) * 0.045;
@@ -57,7 +71,6 @@ export default function CameraRig({ reduced = false }) {
       desired.y += pointer.sy * 0.6;
     }
 
-    // velocity adds a subtle push-in on fast scroll
     const vpush = THREE.MathUtils.clamp(Math.abs(scrollState.velocity) * 0.02, 0, 0.6);
     desired.multiplyScalar(1 - vpush * 0.03);
 

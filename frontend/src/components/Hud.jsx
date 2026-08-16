@@ -30,7 +30,9 @@ export default function Hud() {
   // Drive progress bar + chapter label without React re-renders per frame.
   useEffect(() => {
     const tick = () => {
-      const p = scrollState.progress;
+      const el = document.scrollingElement || document.documentElement;
+      const total = (el.scrollHeight - window.innerHeight) || 1;
+      const p = Math.min(1, Math.max(0, (window.scrollY || 0) / total));
       if (barRef.current) barRef.current.style.transform = `scaleX(${p})`;
       const idx = Math.min(NAV.length - 1, Math.floor(p * NAV.length + 0.0001));
       if (idx !== lastChapter.current) {

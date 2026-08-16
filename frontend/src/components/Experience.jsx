@@ -5,6 +5,7 @@ import Cursor from "@/components/Cursor";
 import Hud from "@/components/Hud";
 import Menu from "@/components/Menu";
 import ScrollNarrative from "@/components/ScrollNarrative";
+import Chapters from "@/components/Chapters";
 import { scrollController } from "@/lib/scrollController";
 import { scrollState, pointer } from "@/lib/scrollState";
 import { audio } from "@/lib/audio";
@@ -66,6 +67,7 @@ export default function Experience() {
       </div>
 
       <ScrollNarrative />
+      <Chapters />
 
       <Menu />
       <Hud />
