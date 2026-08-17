@@ -60,6 +60,7 @@ export default function Configurator() {
       onUpdate: (self) => setConfigSpin(self.progress),
     });
     return () => st.kill();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setSceneMode]);
 
   const tap = (fn, v, snd = true) => {
