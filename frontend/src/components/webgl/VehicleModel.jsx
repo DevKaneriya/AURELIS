@@ -36,10 +36,17 @@ function VehicleModel({ finish = "obsidian", accent = "#ff4400", wheel = "perfor
     interiorMats.current = [];
     car.traverse((o) => {
       if (!o.isMesh) return;
+      
+      // Hide platform/stage geometry
+      const nn = o.name || "";
+      if (nn.toLowerCase().includes("platform") || nn.toLowerCase().includes("stage") || nn.toLowerCase().includes("ground")) {
+        o.visible = false;
+        return;
+      }
+      
       o.castShadow = true;
       o.receiveShadow = false;
       const mn = (o.material && o.material.name) || "";
-      const nn = o.name || "";
       if (mn === "Body_Color" || nn === "body" || nn === "blue" || nn === "yellow_trim") {
         const m = new THREE.MeshPhysicalMaterial({
           metalness: 1,
@@ -135,10 +142,10 @@ function VehicleModel({ finish = "obsidian", accent = "#ff4400", wheel = "perfor
   return (
     <group ref={outer}>
       <primitive object={car} />
-      {/* underglow accent */}
+      {/* red underglow accent */}
       <mesh position={[0, 0.015, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <circleGeometry args={[2.1, 48]} />
-        <meshBasicMaterial color={accent} transparent opacity={0.05} toneMapped={false} />
+        <meshBasicMaterial color="#cc3333" transparent opacity={0.4} toneMapped={false} />
       </mesh>
     </group>
   );
